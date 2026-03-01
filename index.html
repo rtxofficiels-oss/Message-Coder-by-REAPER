@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TERMINAL - MESSAGE PRIORITAIRE</title>
     <style>
-        /* TON CSS */
         body {
             background-color: #000;
             color: #00FF41;
@@ -16,7 +15,6 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
-            /* Anti-copie */
             -webkit-user-select: none; user-select: none;
         }
 
@@ -36,6 +34,7 @@
             line-height: 1.6;
             text-shadow: 0 0 10px #00FF41;
             display: none;
+            min-height: 300px; /* Garde une zone stable */
         }
 
         #decrypt-btn {
@@ -75,34 +74,44 @@
     </div>
 
     <script>
-        // TON JAVASCRIPT
-        const monMessageSecret = "CONNEXION ÉTABLIE...<br>IDENTITÉ : AGENT REAPER<br>PROTOCOLE : PROTOCOLE BREAKSTORMS ACTIVER.<br>--------------------------<br>MESSAGE : <br>RENDEZ-VOUS A CETTE POSITION X: 3240.227 | Y: 5171.646.<br>UNE FOIS LA BAS CONTACTER REAPER PAR INTRANET<br>rtx_offi JE VOUS LAISSE COMMUNIQUER EN MORSE.<br>SINON, VOUS EN PAIEREZ LES CONSÉQUENCES<br>NE FAITES CONFIANCE À PERSONNE.<br><br>CELA FAIT UN BON MOMENT QUE VOUS PENSEZ QUE JE NE SUIS PLUS LA, MAIS CE N'EST QUE LE DÉBUT.<br>VOUS AVEZ DÉCIDÉ DE JOUER AVEC LES MAUVAISES PERSONNES.<br>VIPER VOUS AVEZ PRÉVENU VOUS N'AVEZ PAS ÉCOUTÉ NI PRIS EN COMPTE CES MENACES.<br>C'EST LA VOTRE ERREUR, AGENT MATHEO VARGAS AGÉ DE 23 ANS MATRICULE 10.<br>ON VOUS AVAIS PRÉVENU, MAINTENANT DURANT LES PROCHAINES SEMAINES VOUS ALLEZ CONNAITRE LA VENGEANCE DE VIPER.<br>VOUS ALLEZ PERDRE UNE PERSONNE A QUI VOUS TENEZ.<br> CE N'EST QUE LE DEBUT.";
+        const monMessageSecret = "CONNEXION ÉTABLIE...<br>IDENTITÉ : AGENT REAPER<br>PROTOCOLE : PROTOCOLE BREAKSTORMS ACTIVÉ.<br>--------------------------<br>MESSAGE : <br>RENDEZ-VOUS A CETTE POSITION X: 3240.227 | Y: 5171.646.<br>UNE FOIS LA BAS CONTACTER REAPER PAR INTRANET<br>rtx_offi JE VOUS LAISSE COMMUNIQUER EN MORSE.<br>SINON, VOUS EN PAIEREZ LES CONSÉQUENCES<br>NE FAITES CONFIANCE À PERSONNE.<br><br>CELA FAIT UN BON MOMENT QUE VOUS PENSEZ QUE JE NE SUIS PLUS LA, MAIS CE N'EST QUE LE DÉBUT.<br>VOUS AVEZ DÉCIDÉ DE JOUER AVEC LES MAUVAISES PERSONNES.<br>VIPER VOUS AVAIT PRÉVENU VOUS N'AVEZ PAS ÉCOUTÉ NI PRIS EN COMPTE CES MENACES.<br>C'EST LA VOTRE ERREUR, AGENT MATHEO VARGAS AGÉ DE 23 ANS MATRICULE 10.<br>ON VOUS AVAIT PRÉVENU, MAINTENANT DURANT LES PROCHAINES SEMAINES VOUS ALLEZ CONNAITRE LA VENGEANCE DE VIPER.<br>VOUS ALLEZ PERDRE UNE PERSONNE A QUI VOUS TENEZ.<br> CE N'EST QUE LE DEBUT.";
+
+        let i = 0;
+        let lineCount = 0; // Compteur de lignes
 
         function startDecryption() {
             document.getElementById('decrypt-btn').style.display = 'none';
             const outputDiv = document.getElementById('terminal-output');
-            const textTarget = document.getElementById('text-target');
             outputDiv.style.display = 'block';
-
-            let i = 0;
-            function typeWriter() {
-                if (monMessageSecret.substring(i, i + 4) === "<br>") {
-                    textTarget.innerHTML += "<br>";
-                    i += 4;
-                    setTimeout(typeWriter, 70);
-                } else if (i < monMessageSecret.length) {
-                    textTarget.innerHTML += monMessageSecret.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, 70); 
-                }
-            }
             typeWriter();
         }
+
+        function typeWriter() {
+            const textTarget = document.getElementById('text-target');
+
+            // Vérification du saut de ligne
+            if (monMessageSecret.substring(i, i + 4) === "<br>") {
+                lineCount++; // On ajoute 1 au compteur de lignes
+                
+                // Si on a atteint 5 lignes, on efface tout
+                if (lineCount >= 5) {
+                    textTarget.innerHTML = ""; // Efface l'écran
+                    lineCount = 0; // Réinitialise le compteur
+                } else {
+                    textTarget.innerHTML += "<br>";
+                }
+                
+                i += 4;
+                setTimeout(typeWriter, 70);
+            } 
+            else if (i < monMessageSecret.length) {
+                textTarget.innerHTML += monMessageSecret.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50); // Un peu plus rapide pour le texte
+            }
+        }
         
-        // Anti clic-droit
         document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
 </html>
-
-
