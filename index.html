@@ -34,7 +34,7 @@
             line-height: 1.6;
             text-shadow: 0 0 10px #00FF41;
             display: none;
-            min-height: 380px; /* Ajusté pour 6 lignes */
+            min-height: 380px;
         }
 
         #decrypt-btn {
@@ -89,26 +89,26 @@
         function typeWriter() {
             const textTarget = document.getElementById('text-target');
 
+            // Détection du saut de ligne
             if (monMessageSecret.substring(i, i + 4) === "<br>") {
                 lineCount++;
                 i += 4;
 
-                // Si on a atteint 6 lignes, on fait une pause de 5 secondes avant d'effacer
-                if (lineCount >= 7) {
+                // Si on a atteint 6 lignes, pause de 5 secondes puis effacement
+                if (lineCount >= 6) {
                     setTimeout(() => {
                         textTarget.innerHTML = ""; 
                         lineCount = 0; 
                         typeWriter(); 
-                    }, 5000); // 5 secondes de pause pour la lecture
+                    }, 5000); 
                 } else {
                     textTarget.innerHTML += "<br>";
-                    setTimeout(typeWriter, 150); // Temps entre les lignes
+                    setTimeout(typeWriter, 150);
                 }
             } 
             else if (i < monMessageSecret.length) {
                 textTarget.innerHTML += monMessageSecret.charAt(i);
                 i++;
-                // Vitesse d'écriture réduite (90ms) pour un effet plus "clavier"
                 setTimeout(typeWriter, 90); 
             }
         }
@@ -117,8 +117,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
