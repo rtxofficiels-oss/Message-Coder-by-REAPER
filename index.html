@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL - MESSAGE PRIORITAIRE</title>
+    <title>TERMINAL - PROTOCOLE BREAKSTORMS</title>
     <style>
         body {
             background-color: #000;
@@ -16,25 +16,49 @@
             margin: 0;
             overflow: hidden;
             -webkit-user-select: none; user-select: none;
+            position: relative;
         }
 
+        /* Scanlines style vieux moniteur */
         .scanlines {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
             background-size: 100% 4px;
             pointer-events: none;
-            z-index: 10;
+            z-index: 50;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 20;
+            max-width: 800px;
         }
 
         #terminal-output {
             font-size: 1.8rem;
             text-align: left;
-            max-width: 800px;
             line-height: 1.6;
             text-shadow: 0 0 10px #00FF41;
             display: none;
             min-height: 380px;
+            margin-bottom: 20px;
+        }
+
+        /* RECTANGLE DE DÉCOMPTE FINAL */
+        #countdown-box {
+            display: none;
+            font-size: 5rem;
+            font-weight: bold;
+            color: #00FF41;
+            padding: 30px 60px;
+            border: 3px solid #00FF41;
+            background: rgba(0, 50, 0, 0.2);
+            box-shadow: 0 0 20px #00FF41, inset 0 0 15px #00FF41;
+            text-shadow: 0 0 15px #00FF41;
+            position: relative;
         }
 
         #decrypt-btn {
@@ -43,11 +67,9 @@
             border: 2px solid #00FF41;
             padding: 20px 40px;
             font-size: 1.5rem;
-            font-family: 'Courier New', monospace;
             cursor: pointer;
             box-shadow: 0 0 15px #00FF41;
             text-transform: uppercase;
-            z-index: 20;
         }
 
         #decrypt-btn:hover { background: #00FF41; color: black; }
@@ -61,16 +83,28 @@
             vertical-align: middle;
         }
         @keyframes blink { 50% { opacity: 0; } }
+
+        /* Animation d'explosion de l'écran */
+        .destroy-anim { animation: boom 2s forwards; }
+        @keyframes boom {
+            0% { filter: saturate(1) brightness(1); }
+            50% { filter: saturate(20) brightness(5); background: white; }
+            100% { filter: brightness(0); opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
     <div class="scanlines"></div>
 
-    <button id="decrypt-btn" onclick="startDecryption()">[ DÉCRYPTER LE MESSAGE ]</button>
+    <div id="container">
+        <button id="decrypt-btn" onclick="startDecryption()">[ DÉCRYPTER LE MESSAGE ]</button>
+        
+        <div id="terminal-output">
+            <span id="text-target"></span><span class="cursor"></span>
+        </div>
 
-    <div id="terminal-output">
-        <span id="text-target"></span><span class="cursor"></span>
+        <div id="countdown-box"><span id="timer">10:000</span></div>
     </div>
 
     <script>
@@ -81,26 +115,23 @@
 
         function startDecryption() {
             document.getElementById('decrypt-btn').style.display = 'none';
-            const outputDiv = document.getElementById('terminal-output');
-            outputDiv.style.display = 'block';
+            document.getElementById('terminal-output').style.display = 'block';
             typeWriter();
         }
 
         function typeWriter() {
             const textTarget = document.getElementById('text-target');
 
-            // Détection du saut de ligne
             if (monMessageSecret.substring(i, i + 4) === "<br>") {
                 lineCount++;
                 i += 4;
 
-                // Si on a atteint 6 lignes, pause de 5 secondes puis effacement
                 if (lineCount >= 6) {
                     setTimeout(() => {
                         textTarget.innerHTML = ""; 
                         lineCount = 0; 
                         typeWriter(); 
-                    }, 5000); 
+                    }, 4000); // 4 secondes pour lire avant d'effacer
                 } else {
                     textTarget.innerHTML += "<br>";
                     setTimeout(typeWriter, 150);
@@ -109,8 +140,34 @@
             else if (i < monMessageSecret.length) {
                 textTarget.innerHTML += monMessageSecret.charAt(i);
                 i++;
-                setTimeout(typeWriter, 90); 
+                setTimeout(typeWriter, 80); 
+            } 
+            else {
+                // FIN DU TEXTE : On attend un peu et on lance le décompte
+                setTimeout(startFinalCountdown, 2000);
             }
+        }
+
+        function startFinalCountdown() {
+            document.getElementById('terminal-output').style.display = 'none';
+            const box = document.getElementById('countdown-box');
+            const timerSpan = document.getElementById('timer');
+            box.style.display = 'block';
+
+            let timeLeft = 10000; // 10 secondes
+            const interval = setInterval(() => {
+                timeLeft -= 13;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerSpan.innerHTML = "0:000";
+                    document.body.classList.add('destroy-anim');
+                    setTimeout(() => { document.body.innerHTML = ""; }, 2000);
+                } else {
+                    let s = Math.floor(timeLeft / 1000);
+                    let ms = timeLeft % 1000;
+                    timerSpan.innerHTML = s + ":" + ms.toString().padStart(3, '0');
+                }
+            }, 13);
         }
         
         document.addEventListener('contextmenu', e => e.preventDefault());
