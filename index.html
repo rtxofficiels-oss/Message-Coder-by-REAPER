@@ -94,22 +94,22 @@
                 i += 4;
 
                 // Si on a atteint 6 lignes, on fait une pause de 3 secondes avant d'effacer
-                if (lineCount >= 6) {
+                if (lineCount >= 7) {
                     setTimeout(() => {
                         textTarget.innerHTML = ""; 
                         lineCount = 0; 
                         typeWriter(); 
-                    }, 3000); // 3 secondes de pause pour la lecture
+                    }, 10000); // 10 secondes de pause pour la lecture
                 } else {
                     textTarget.innerHTML += "<br>";
-                    setTimeout(typeWriter, 100); // Temps entre les lignes
+                    setTimeout(typeWriter, 200); // Temps entre les lignes
                 }
             } 
             else if (i < monMessageSecret.length) {
                 textTarget.innerHTML += monMessageSecret.charAt(i);
                 i++;
                 // Vitesse d'écriture réduite (90ms) pour un effet plus "clavier"
-                setTimeout(typeWriter, 90); 
+                setTimeout(typeWriter, 120); 
             }
         }
         
@@ -117,3 +117,4 @@
     </script>
 </body>
 </html>
+
