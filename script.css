@@ -1,0 +1,58 @@
+body {
+            background-color: #000;
+            color: #00FF41;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        #terminal-output {
+            font-size: 1.8rem;
+            text-align: left; /* Aligné à gauche pour plus de réalisme */
+            max-width: 700px;
+            line-height: 1.6;
+            text-shadow: 0 0 10px #00FF41;
+            display: none;
+        }
+
+        #decrypt-btn {
+            background: transparent;
+            color: #00FF41;
+            border: 2px solid #00FF41;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            box-shadow: 0 0 15px #00FF41;
+            text-transform: uppercase;
+        }
+
+        #decrypt-btn:hover {
+            background: #00FF41;
+            color: black;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 12px;
+            height: 1.8rem;
+            background-color: #00FF41;
+            margin-left: 5px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
